@@ -1,9 +1,15 @@
 import React, {useState} from 'react'
+import {JWT_API_URL} from '../../../Config/Config'
+import Axios from 'axios'
+
+const URL = 'http://192.168.10.12:5500'
 
 export default function Register() {
     const [userName, setUserName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [successMessage, setsuccessMessage] = useState(false)
+    const [failedMessage, setfailedMessage] = useState(false)
 
     const userNameHandler = (event) =>{
         console.log("userName", event.target.value)
@@ -20,16 +26,49 @@ export default function Register() {
         setPassword(event.target.value)
     }
 
+    const resetStates = () =>{
+        setUserName(null)
+        setEmail(null)
+        setPassword(null)
+    }
+
     const submitHandler = (event) =>{
 
         const data = {
-            userName: userName,
+            username: userName,
             email: email,
-            password: password
+            password: password,
+            role_id:1
         }
 
+
         console.log("sumbmit data", data)
+
+        Axios.post(`${URL}/register`,
+          data
+        )
+        .then((response)=>{
+            console.log("result", response)
+            if(response.data.status == 200){
+                setfailedMessage(false)
+                setsuccessMessage(true)
+            }
+            else{
+                setsuccessMessage(false)
+                setfailedMessage(true)
+                
+            }
+                
+        })
+        .catch((error)=>{
+            console.log("result", error)
+            setsuccessMessage(false)
+            setfailedMessage(true)
+        })
+
     }
+
+    
 
 
     return (
@@ -66,6 +105,21 @@ export default function Register() {
                         <button type="button" class="btn btn-primary" onClick={submitHandler}>Submit</button>
                     </div>
                     <div className="col-sm-2"></div>
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-12">
+                        {
+                            successMessage ?
+                            <p>User Registered Successfully</p>
+                            : null
+                        }
+                        {
+                            failedMessage ?
+                            <p>failed to Sign Up User!!!!</p>
+                            : null
+                        } 
+                    </div>
                 </div>
             </div>
         </div>

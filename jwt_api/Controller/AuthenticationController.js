@@ -5,36 +5,38 @@ const bcrypt = require("bcrypt")
 
 
 exports.registerUser = (req, res) =>{
+
+    console.log("body", req.body)
     User.findOne({
         where:{
             [Op.or]: [
-                { username: req.body.data.username },
-                { email: req.body.data.email }
+                { username: req.body.username },
+                { email: req.body.email }
             ]
         }
     })
     .then((result)=>{
         // Duplicate User Exists
         if(result){
-            res.json({
+            return res.json({
                 status: 400,
                 message: "User Already Exits. Please try anothe Username of Password"
             })
         }
         
-        bcrypt.hash(req.body.data.password, 10)
+        bcrypt.hash(req.body.password, 10)
         .then((hashPassword)=>{
-            req.body.data['password'] = hashPassword
+            req.body['password'] = hashPassword
             
-            User.create(req.body.data)
+            User.create(req.body)
             .then((response)=>{
-                res.json({
+                return res.json({
                     status: 200,
                     message: "User created Successfully"
                 })
             })
             .catch((error)=>{
-                res.json({
+                return res.json({
                     status: 400,
                     message: error
                 })
@@ -43,7 +45,7 @@ exports.registerUser = (req, res) =>{
 
         })
         .catch((error)=>{
-            res.json({
+            return res.json({
                 status: 400,
                 message: error
             })
@@ -51,7 +53,7 @@ exports.registerUser = (req, res) =>{
         
     })
     .catch((error)=>{
-        res.json({
+        return res.json({
             status: 400,
             message: error
         })
