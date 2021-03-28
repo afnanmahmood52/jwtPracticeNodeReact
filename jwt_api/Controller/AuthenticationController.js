@@ -1,10 +1,10 @@
 const User = require('../Models/user')
 const { Op } = require("sequelize");
+const bcrypt = require("bcrypt")
+
 
 
 exports.registerUser = (req, res) =>{
-    
-    console.log("data", req.body)
     User.findOne({
         where:{
             [Op.or]: [
@@ -14,6 +14,7 @@ exports.registerUser = (req, res) =>{
         }
     })
     .then((result)=>{
+        // Duplicate User Exists
         if(result){
             res.json({
                 status: 400,
@@ -21,12 +22,25 @@ exports.registerUser = (req, res) =>{
             })
         }
         
-        User.create(req.body.data)
-        .then((response)=>{
-            res.json({
-                status: 200,
-                message: "User created Successfully"
+        bcrypt.hash(req.body.data.password, 10)
+        .then((hashPassword)=>{
+            req.body.data['password'] = hashPassword
+            
+            User.create(req.body.data)
+            .then((response)=>{
+                res.json({
+                    status: 200,
+                    message: "User created Successfully"
+                })
             })
+            .catch((error)=>{
+                res.json({
+                    status: 400,
+                    message: error
+                })
+            })
+
+
         })
         .catch((error)=>{
             res.json({
@@ -34,7 +48,7 @@ exports.registerUser = (req, res) =>{
                 message: error
             })
         })
-
+        
     })
     .catch((error)=>{
         res.json({
