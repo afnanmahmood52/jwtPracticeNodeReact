@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {JWT_API_URL} from '../../../Config/Config'
+import {JWT_API_URL} from '../../Config/Config'
 import Axios from 'axios'
 
-const URL = 'http://192.168.10.12:5500'
+//const URL = 'http://192.168.10.12:5500'
 
 export default function Register() {
     const [userName, setUserName] = useState('')
@@ -44,7 +44,7 @@ export default function Register() {
 
         console.log("sumbmit data", data)
 
-        Axios.post(`${URL}/register`,
+        Axios.post(`${JWT_API_URL}/register`,
           data
         )
         .then((response)=>{
@@ -70,7 +70,8 @@ export default function Register() {
 
     
 
-
+    console.log("url", JWT_API_URL)
+    
     return (
         <div className="Registration Form">
             <div className="container">
