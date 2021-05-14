@@ -1,41 +1,62 @@
 import React, {useState} from 'react'
 import {JWT_API_URL} from '../../Config/Config'
 import Axios from 'axios'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-//const URL = 'http://192.168.10.12:5500'
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function Register() {
     const [userName, setUserName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [successMessage, setsuccessMessage] = useState(false)
-    const [failedMessage, setfailedMessage] = useState(false)
+    const [successSnackBar, setSuccessSnackBar] = useState(false)
+    const [failedSnackbar, setFailedSnackbar] = useState(false)
 
     const userNameHandler = (event) =>{
-        console.log("userName", event.target.value)
+        // console.log("userName", event.target.value)
         setUserName(event.target.value)
     }
 
     const emailHandler = (event) =>{
-        console.log("userName", event.target.value)
+        // console.log("userName", event.target.value)
         setEmail(event.target.value)
     }
 
     const passwordHandler = (event) =>{
-        console.log("userName", event.target.value)
+        // console.log("userName", event.target.value)
         setPassword(event.target.value)
     }
 
     const resetStates = () =>{
-        setUserName(null)
-        setEmail(null)
-        setPassword(null)
+        setUserName('')
+        setEmail('')
+        setPassword('')
     }
+
+    const closeSuccessSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+
+        setSuccessSnackBar(false);
+    };
+
+    const closeFailedSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+
+        setFailedSnackbar(false);
+    };
 
     const submitHandler = (event) =>{
 
         const data = {
-            username: userName,
+            user_name: userName,
             email: email,
             password: password,
             role_id:1
@@ -49,28 +70,26 @@ export default function Register() {
         )
         .then((response)=>{
             console.log("result", response)
-            if(response.data.status == 200){
-                setfailedMessage(false)
-                setsuccessMessage(true)
+            if(response.data.status === 200){
+                setFailedSnackbar(false)
+                setSuccessSnackBar(true)
+                resetStates()
+                return;   
             }
-            else{
-                setsuccessMessage(false)
-                setfailedMessage(true)
-                
-            }
-                
+            
+            setSuccessSnackBar(false)
+            setFailedSnackbar(true)
+            resetStates()
+
         })
         .catch((error)=>{
             console.log("result", error)
-            setsuccessMessage(false)
-            setfailedMessage(true)
+            setSuccessSnackBar(false)
+            setFailedSnackbar(true)
         })
 
     }
 
-    
-
-    console.log("url", JWT_API_URL)
     
     return (
         <div className="Registration Form">
@@ -90,38 +109,64 @@ export default function Register() {
 
                         <div className="form-group">
                             <label className="username-label">UserName:</label>
-                            <input type="text" className="form-control" id="username-label" placeholder="Enter username..." onChange={userNameHandler}/>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="username-label"
+                                value={userName}
+                                placeholder="Enter username..."
+                                onChange={userNameHandler}
+                            />
                         </div>
 
                         <div className="form-group">
                             <label className="email-label">Email:</label>
-                            <input type="text" className="form-control" id="email-label" placeholder="Enter email..." onChange={emailHandler}/>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="email-label"
+                                value={email}
+                                placeholder="Enter email..."
+                                onChange={emailHandler}
+                            />
                         </div>
                         
                         <div className="form-group">
                             <label className="password-label">Password:</label>
-                            <input type="password" className="form-control" id="password-label" placeholder="Enter password..." onChange={passwordHandler}/>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password-label"
+                                value={password}
+                                placeholder="Enter password..."
+                                onChange={passwordHandler}
+                            />
                         </div>
 
-                        <button type="button" class="btn btn-primary" onClick={submitHandler}>Submit</button>
+                        {/* <CircularProgress size={25} thickness={5}/>     */}
+                        <button type="button" className="btn btn-primary" onClick={submitHandler}>Submit</button>
+
+                        <button class="btn btn-primary submit-btn" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Submitting
+                        </button>
+
                     </div>
                     <div className="col-sm-2"></div>
                 </div>
 
-                <div className="row">
-                    <div className="col-sm-12">
-                        {
-                            successMessage ?
-                            <p>User Registered Successfully</p>
-                            : null
-                        }
-                        {
-                            failedMessage ?
-                            <p>failed to Sign Up User!!!!</p>
-                            : null
-                        } 
-                    </div>
-                </div>
+
+                <Snackbar open={successSnackBar} autoHideDuration={2000} onClose={closeSuccessSnackbar}>
+                    <Alert onClose={closeSuccessSnackbar} severity="success">
+                        User registered successfully
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={failedSnackbar} autoHideDuration={2000} onClose={closeFailedSnackbar}>
+                    <Alert onClose={closeFailedSnackbar} severity="error">
+                        Failed to Sign Up User.
+                    </Alert>
+                </Snackbar>
             </div>
         </div>
     )

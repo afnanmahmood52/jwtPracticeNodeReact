@@ -17,6 +17,7 @@ export default function Login() {
 
     const submitHandler = (event) =>{
 
+        const emailId = email;
         const data = {
             userName: userName,
             password: password
@@ -50,7 +51,7 @@ export default function Login() {
                             <input type="password" className="form-control" id="password-label" placeholder="Enter password..." onChange={passwordHandler}/>
                         </div>
 
-                        <button type="button" class="btn btn-primary" onClick={submitHandler}>LOGIN</button>
+                        <button type="button" className="btn btn-primary" onClick={submitHandler}>LOGIN</button>
                     </div>
                     <div className="col-sm-2"></div>
                 </div>

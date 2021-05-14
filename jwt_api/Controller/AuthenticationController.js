@@ -10,17 +10,18 @@ exports.registerUser = (req, res) =>{
     User.findOne({
         where:{
             [Op.or]: [
-                { username: req.body.username },
+                { user_name: req.body.user_name },
                 { email: req.body.email }
             ]
         }
     })
     .then((result)=>{
         // Duplicate User Exists
+        console.log("username", result)
         if(result){
             return res.json({
                 status: 400,
-                message: "User Already Exits. Please try anothe Username of Password"
+                message: "User Already Exits. Please try another Username of Password"
             })
         }
         
@@ -53,6 +54,7 @@ exports.registerUser = (req, res) =>{
         
     })
     .catch((error)=>{
+        console.log("error", error)
         return res.json({
             status: 400,
             message: error

@@ -11,6 +11,7 @@ app.use(express.urlencoded({     // to support URL-encoded bodies
 }));
 
 const AuthenticationController = require('./Controller/AuthenticationController')
+const UserController = require('./Controller/UserController')
 
 const port = process.env.JWT_API_PORT_NO
 const api_url = process.env.JWT_API_HOST
@@ -22,6 +23,9 @@ get('/', (req, res) => {
 
 app.
 post('/register', AuthenticationController.registerUser)
+
+app.
+get('/users/getAll', UserController.getAllUsers)
 
 
 

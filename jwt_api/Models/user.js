@@ -3,7 +3,7 @@ const db = require('../db/db.config')
 
 const User = db.define('User', {
     // Model attributes are defined here
-    username: {
+    user_name: {
       type: DataTypes.STRING(20),
       allowNull: false,
       primaryKey: true
