@@ -6,7 +6,8 @@ import Navbar from './Components/Navbar/Navbar'
 import Register from './Components/Register/Register'
 import Login from './Components/Login/Login'
 import Profile from './Components/Profile/Profile'
-import Moderator from './Components/ModeratorPage/Moderator'
+import Moderator from './Components/ModeratorPage/Moderator';
+
 
 function App() {
   return (
